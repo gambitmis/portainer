@@ -1,0 +1,30 @@
+version: '3.7'
+
+volumes:
+  db_data:
+  db_log:
+
+networks:
+  db:
+    external: yes
+
+services:
+
+  mariadb:
+    image: mariadb:10.9.3-jammy
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/mysql
+      - db_log:/var/log/mysql
+    # - .conf/50-server.cnf-rep-master:/etc/mysql/mariadb.conf.d/50-server.cnf
+      - /portainer/mariadb/rep-master/conf/50-server.cnf-rep-master:/etc/mysql/mariadb.conf.d/50-server.cnf
+    ports:
+      - 3306:3306
+    networks:
+      - db
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://192.168.100.101:3100/loki/api/v1/push"
+    environment:
+      MARIADB_ROOT_PASSWORD: password

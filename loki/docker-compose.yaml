@@ -1,0 +1,16 @@
+version: '3.7'
+
+networks:
+  monitor:
+    external: yes
+
+services:
+
+  loki:
+    image: grafana/loki
+    restart: unless-stopped
+    networks:
+      - monitor
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml

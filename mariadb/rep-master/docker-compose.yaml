@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 volumes:
   db_data:
@@ -16,8 +16,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - db_log:/var/log/mysql
-    # - .conf/50-server.cnf-rep-master:/etc/mysql/mariadb.conf.d/50-server.cnf
-      - /portainer/mariadb/rep-master/conf/50-server.cnf-rep-master:/etc/mysql/mariadb.conf.d/50-server.cnf
+      - /portainer/mariadb/rep-master/conf/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
     ports:
       - 3306:3306
     networks:
@@ -25,6 +24,21 @@ services:
     logging:
       driver: loki
       options:
-        loki-url: "http://192.168.100.101:3100/loki/api/v1/push"
+        loki-url: "http://loki:3100/loki/api/v1/push"
     environment:
       MARIADB_ROOT_PASSWORD: password
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.0-apache
+    restart: unless-stopped
+    networks:
+      - db
+    ports:
+      - 8880:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mariadb
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://loki:3100/loki/api/v1/push"

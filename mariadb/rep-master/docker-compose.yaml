@@ -16,8 +16,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - db_log:/var/log/mysql
-    # - .conf/50-server.cnf-rep-master:/etc/mysql/mariadb.conf.d/50-server.cnf
-      - /portainer/mariadb/rep-master/conf/50-server.cnf-rep-master:/etc/mysql/mariadb.conf.d/50-server.cnf
+      - /portainer/mariadb/rep-master/conf/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
     ports:
       - 3306:3306
     networks:
